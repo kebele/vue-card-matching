@@ -1,0 +1,11 @@
+CARD MATCHING VUE 3 
+refactor notları
+
+* src>features> createDeck.js 
+
+
+THANKS TO BENCODEZEN
+https://www.youtube.com/watch?v=_uwZSWTAZ8c
+https://github.com/bencodezen/peek-a-vue
+
+

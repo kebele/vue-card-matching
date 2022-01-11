@@ -1,0 +1,111 @@
+CARD MATCHING GAME WITH VUE 3
+
+* kurulum
+
+* temizlik
+
+* Card.vue hazırla
+
+* Vue 3 te vue 2'deki data gitti, setup(){...} geldi, 16 tane card box oluşturalım, for loop ile setup func içinde, app.vue da <Card /> içinden Card.vue ya :value="card" ile bir value yollayacağız, bunu da Card.vue'dan props ile alacağız
+
+* App.vue dan card.vue ya props olarak card position bilgiside gelecek, 
+
+* kartların iki yüzü olacak, tıklamayla değişecek, card comp'unu, iki div yapacağız biri ön yüz diğeri arka yüz olacak, .card yani card ların içinde olduğu büyük div pos relative olacak, küçük cardlar pos absolute olacak, 
+
+* visible tanımlayacağız, hengi yüz visible ise o görünecek diğeri görümeyecek, v-if v-else ile, setup içine visible tanımlayacağız, true old. kırmızı yüz, false da mavi yüz, setup ı kaldıralım, bu bilgide props olarak gelsin Card.ve ya
+
+* App.vue ya gidip card ları oluşturduğumuz for loop'u kurcalayalım, burada artık cardlar bir nesne şeklinde üreteceğiz, 
+  cardList.push({
+        value: i,
+        visible: false,
+      });
+      ve template'den de card.visible olarak yollayacağız,
+
+* şimdi card'a tıklamayı da emit ile App.vue ya yollayalım ki visible değerini değiştrebilelim, .card a @click="selectCard" ve methodu hazırlayalım, setup içinde arrow func olarak hazırlayacağız, 
+
+* App.vue da select-card ı emitliyoruz, bunu card.vue içinde alacağız ve bununla position bilgisini almış olacağız, yani hangi card a tıklandığımızı öğreneceğiz, herhangibir card a tıkladığımızda @select-card="flipCard" func çalışacak ve bu func değerini select-card olarak emitleiyoruz, 
+
+* flipCard func ise cardList içinde hangi card'a tıkladığımız bilgisini alıyor ve bu card ın visible değerini true yapıyor bu bilgiyi emitliyoruz,
+
+* burada çalışmadı bunun sebebi mevcut hali ile ref'li değil yani reaksiyon almıyor, bunu reactif hale getirmeliyoz, App.vue ya ref import edeceğiz, 
+
+* cardList artık ref li olacak, yani bu array reactif olsun diyoruz, ve artık burada yapacağımız psuh vs hep value olarak olacak, 
+
+************* OZET ******************
+
+App.vue ana component Card.vue ise her bir card, 16 tane card olacak, bunlar cardList adında bir array içerisinde tutlacaklar, bu cardları for loop ile oluşturacağız, her bir card ın bir value'su, visible bilgisi (false olacak başlangıçta) ve position bilgisi olacak ve bunları props olarak Card.vue ya göndereceğiz, 
+
+Card.vue dan da @click="selectCard" fuc çalıştıracağız, bu func, select-card key i ile tıkladığımız card'ın position bilgisini ( bu bilgide zaten props olarak gelmişti, oradan alıp) select-card olarak emitleyecek, emitlenen bilgi App.vue'dan alınacak (position bilgisi yani tıklanan kartın numarası) ve flipCard func payload u olarak kullanılacak ve numarası alınan card'ın visible değeri true olacak, böylelikle kartın ön yüzü olan div görünecek diğeri görünmeyecek
+
+*********************************
+
+* App.vue ya gidip seçilen card lar için bir array yapalım, flipCard her çalıştığında yani herhangibir karta tıklandığında ilk tıkladığımızı userSelection a kaydedelim, ikinci tıkladığımızıda kaydedelim, 
+
+* Card.vue da selectCard içinden faceValue = props.value yu da emitleyelim, artık userSelection array'i içine seçtiğimiz card bilgisi push lanırken tıkladığımız kartın value su da geliyor, 
+
+* watch import edip, userSelection ı izlemeye başlayalım, userSelection.length 2 olduğunda bu array i boşaltalım, 
+
+* for loop ile oluşturduğumuz card ın içine matched : false koyalım ve bunu props olarak Card.vue'ya yollayalım, 
+
+* şu anda watch ettiğimiz userSelection'da durum; 2 tane kart seçtiğimizde iki kartın iki kartın faceValue birbiri ile aynı ise status u Matched yapacak ve iki kartın matched değerlerinide true yapcak, eğer aynı değilse yani kartlar farklı ise status Mismatched yapacak ve kartların visible larını false yapacak, yani kartlar arkasını dönecek ve userSelection array'ını yani seçtiğimiz kart array'ını boşaltacak
+
+* şimdi kartların aynı old ne olacağını farklı old. ne olacağını yaptık, şimdi kalan kart çiftleri durumuna bakalım
+
+* computed import, matched ı false olanları filtreleyip sabunların sayısını alıp ikiye böldüğümüzde kalan kart çifti sayısnı alırız, artık status u değiştirelim, remainingPairs 0 ise oyunu kazandık demektir, 
+
+* for loop'ta value yu mesela 6 (yani bütün kartların değerini i değilde 6) yapıp denemsini yapalım, başarılı,
+
+* kartların shuffle durumunu yapalım, lodash yükleyelim, yarn add lodash, lodash import, shuffleCards func hazırlayalım, bunuda butona bağlayalım, for loop da visible ları true yapalım, cardların hepsinin ön yüzünü açalım ve kartların karışıp karışmadığını deneyelim, başarılı, 
+
+* restart game yapalım, kartlar shuffle olacak ve card özellikleri, matched, position, visible gibi default hallerine dönecek
+
+* card lara ıtem atayacalım, kart çiftleri oluşturmak için, 16 kartımız var yani bize 8 çift lazım, şimdi önceden for loop ile yaptığımızı bu sefer cardList i esas alarak forEach ile yaacağız ve iki sefer aynı listeyi pushlayacağız, item larda card lar olacak, value, visible, position, matched özellikleri yer alacak vs. daha sonrada cardList i oluşturacağız
+
+* ikinci kart seçildiğinde yanlışsa geri dönmeden önce biraz beklesin diye timeout verdik, 
+
+* aynı karta iki sefer tıklayınca bir bug var sanki doğru bulmuş gibi yapıyor bunu çözelim, problem flipCard içinde oluyor, 
+flipCard şunu yapıyor, tıkladık, tıkladığımız kartı visible yaptı, sonra ilk tıkladığımızın true ise (tıkladıysak bir karta) o zaman ilk tıkladığımız position ı ve payload un positionu aynı ise ve ikinci tıkladığımızında faveValue su ile payload un faceValue su aynı ise (yani aynı karta tekrar tıkladıysak) duracak, değilse (başka karta tıkladıysak) normal açacak, zaten karşılaştırma başka yerde
+
+* artık design kısmı, images i repodan alalım ve public altına, design kısımlarını biraz yaptık
+
+* faceValue konusunu değiştirelim buraya kadar aynı sayılarla gittik artık isimlerle gitmeiliyiz hedef aynı sayıları değil aynı resimleri bulmak bunun içinde resimlere isim vermeliyiz, faceValue yu değiştiriyoruz, 
+
+* props dan değiştirdik App.vue da da cardItems artık sayı değil isimler olacak, 
+    const cardItems = [
+      "bat",
+      "candy",
+      "cauldron",
+      "cupcake",
+      "ghost",
+      "moon",
+      "pumpkin",
+      "witch-hat",
+    ];
+
+* şimdi isismlerin yerine kartlarda iamge lar çıksın,  
+
+* design konuları devam
+
+* animasyon ekleyelim, flip effect ekledik, css ile kendimiz
+
+* shuffle effect ekleyelim, App.vue daki game-board secton'ı transition-group arasına alalım,  sectionada name="shuffle-card" verelim, style kısmına bak, .shuffle-card-move{ ... } burada -move eki vue'içindeki animasyon kütüphanesi ile ilgili,  istediğimiz şey shuffle olurken animasyonlu şekilde kartların karışması, 
+
+* Card.vue da kartların arkasına numarasını yadırıp shuffle da move yapıp yapmadıklarına bakalım, deneyelim, bir şey değişmedi, App.vue da shuffleCard func kurcalayalım, koda bak, kartları çevirip bakalım (visible: true yapıp) restartta kartlar karılıyor mu, evet karılıyor ama animasyon yok, card da index vermeyelim ayrı bir değer verelim index kullanmayalım, cardList2e push yaparken variant adında bir değer pushlayalım ve card v-for undan index i kaldıralım, transition-group kullanımına dikkat,
+
+* şimdi konfetiyi yapalım, yarn add canvas-confetti
+kurulum sonrası paketin kendi sitesi olan https://www.kirilv.com/canvas-confetti/
+buradan school pride seçtik, kopyaladık, src>utilities>confetti.js
+
+buraya canvas-confetti import sonrada export const launchConfetti yi arrow func olarak export edip App.js e import edeceğiz, 
+
+* ikinci bir watch hazırlayalım, 
+
+
+* 
+
+
+
+
+
+
+
